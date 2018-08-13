@@ -522,8 +522,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.vv.springcache</groupId>
-      <artifactId>vv-springcache4-redis</artifactId>
+      <groupId>com.liudaye.springcache</groupId>
+      <artifactId>liudaye-springcache4-redis</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
