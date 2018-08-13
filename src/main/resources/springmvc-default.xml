@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-autowire="byName">
+
+    <!-- 启用缓存注解功能，这个是必须的，否则注解不会生效，另外，该注解一定要声明在spring主配置文件中才会生效 -->
+    <cache:annotation-driven cache-manager="cacheManager" />
+
+    <!-- 扫描组件 -->
+    <!-- enable component scanning (beware that this does not enable mapper scanning!)  -->
+    <context:component-scan base-package="com.vv.musiclive.user.service"/>
+    <task:annotation-driven/>
+    <!--<aop:aspectj-autoproxy  proxy-target-class="true"/>-->
+
+    <!-- enable autowire 当使用 <context:component-scan/> 后，就可以将 <context:annotation-config/> 移除了-->
+    <context:annotation-config/>
+
+    <context:component-scan base-package="com.vv.**.controller"/>
+
+    <!--启动Spring MVC的注解功能，完成请求和注解POJO的映射，添加拦截器，类级别的处理器映射 	-->
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    </bean>
+    <!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射,配置一个基于注解的定制的WebBindingInitializer，
+             解决日期转换问题，方法级别的处理器映射	-->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="cacheSeconds" value="0"/>
+        <!-- 配置一下对json数据的转换 -->
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="order" value="2"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="exposeSpringMacroHelpers" value="true"/>
+        <property name="exposeRequestAttributes" value="true"/>
+        <property name="exposeSessionAttributes" value="true"/>
+        <property name="allowSessionOverride" value="true"/>
+        <property name="dateToolAttribute" value="dateTool"/>
+        <property name="numberToolAttribute" value="numberTool"/>
+    </bean>
+
+    <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="WEB-INF/templates"/>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"/>
+
+    <!-- 处理线程池 -->
+    <bean id="askExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10"/>
+        <property name="maxPoolSize" value="200"/>
+        <property name="queueCapacity" value="2000"/>
+        <property name="keepAliveSeconds" value="60"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$AbortPolicy"/>
+        </property>
+    </bean>
+    <!--<bean id="springContextUtil" class="com.vv.musiclive.comm.SpringContextUtil"></bean>-->
+</beans>
