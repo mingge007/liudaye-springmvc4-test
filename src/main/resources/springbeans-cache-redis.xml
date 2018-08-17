@@ -6,7 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--<cache:annotation-driven cache-manager="cacheManager" />-->
-    <!--<context:component-scan base-package="com.vv.**.service"/>-->
 
     <!-- 连接池配置. -->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
@@ -34,24 +33,26 @@
     <!-- 以下是spring-data-redis配置方式 -->
     <bean id="sentinelConfig"
           class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
-        <constructor-arg name="master" value="mymaster_music_test"/>
+        <constructor-arg name="master" value="mymaster"/>
         <constructor-arg name="sentinelHostAndPorts">
             <set>
-                <value>114.112.92.159:26379</value>
+                <value>210.73.211.158:20001</value>
+                <value>210.73.211.158:20002</value>
+                <value>210.73.211.158:20003</value>
             </set>
         </constructor-arg>
     </bean>
 
     <!--jedis链接工厂-->
     <bean id="jedisConnectionFactory"
-          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:password="51vv.com"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:password="liudaye.com"
           p:database="11" p:convertPipelineAndTxResults="true">
         <!--哨兵模式-->
         <constructor-arg ref="sentinelConfig"/>
     </bean>
     <!--哨兵模式-redis从库链接工厂-->
     <bean id="jedisSlaveConnectionFactory"
-          class="com.vv.springcache.redis.slavesupport.JedisSentinelSlaveConnectionFactory" p:password="51vv.com"
+          class="com.liudaye.redisCache.slavesupport.JedisSentinelSlaveConnectionFactory" p:password="liudaye.com"
           p:database="11" p:convertPipelineAndTxResults="true">
         <!--哨兵模式-->
         <constructor-arg ref="sentinelConfig"/>
@@ -76,14 +77,14 @@
     </bean>
 
     <!--支持主从读写分离redis操作组-->
-    <bean id="masterAndSlaveRedisGroup" class="com.vv.springcache.redis.slavesupport.MasterAndSlaveRedisGroup">
+    <bean id="masterAndSlaveRedisGroup" class="com.liudaye.redisCache.slavesupport.MasterAndSlaveRedisGroup">
         <constructor-arg index="0" ref="cacheRedisTemplate"></constructor-arg>
         <constructor-arg index="1" ref="cacheSlaveRedisTemplate"></constructor-arg>
         <property name="expires" value="600"/>
     </bean>
 
     <!--<cache:annotation-driven/>-->
-    <bean id="cacheManager" class="com.vv.springcache.redis.VVRedisCacheManager">
+    <bean id="cacheManager" class="com.liudaye.redisCache.VVRedisCacheManager">
         <constructor-arg ref="masterAndSlaveRedisGroup"></constructor-arg>
         <property name="masterAndSlaveRedisGroupMap">
             <map>
@@ -99,10 +100,10 @@
 
     <bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
 
-    <bean id="myObjectMapper" class="com.vv.springcache.redis.VVObjectMapper"></bean>
+    <!--<bean id="myObjectMapper" class="com.liudaye.redisCache.VVObjectMapper"></bean>-->
 
     <bean id="jsonSerializer" class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer">
-        <constructor-arg name="mapper" ref="myObjectMapper"></constructor-arg>
+        <!--<constructor-arg name="mapper" ref="myObjectMapper"></constructor-arg>-->
     </bean>
 
     <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">

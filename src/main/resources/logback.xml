@@ -97,9 +97,6 @@
         <appender-ref ref="R"/>
     </logger>
 
-    <logger name="com.vv.musiclive.filter.EncryptHttpServletResponse" level="INFO" additivity="false">
-        <appender-ref ref="R"/>
-    </logger>
 
     <logger name="org.apache.commons.beanutils.BeanUtils" level="INFO" additivity="false">
         <appender-ref ref="R"/>
@@ -109,9 +106,6 @@
         <appender-ref ref="R"/>
     </logger>
 
-    <logger name="com.vv.vvlive.schedule" level="debug" additivity="false">
-        <appender-ref ref="schedule"/>
-    </logger>
     <logger name="com.taobao.pamirs.schedule" level="info" additivity="false">
         <appender-ref ref="schedule"/>
     </logger>
